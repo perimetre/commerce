@@ -14,10 +14,13 @@
   .root {
     @apply flex-row items-start justify-center py-32;
   }
+
   .title {
     @apply text-5xl max-w-xl text-right leading-10 -mt-3;
+
     line-height: 3.5rem;
   }
+
   .description {
     @apply mt-0 ml-6;
   }

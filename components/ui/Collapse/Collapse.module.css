@@ -16,6 +16,7 @@
 
 .icon {
   @apply mr-3 text-accent-6;
+
   margin-left: -6px;
   transition: transform 0.2s ease;
 }

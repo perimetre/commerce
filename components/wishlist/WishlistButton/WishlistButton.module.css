@@ -2,8 +2,9 @@
   transition-duration: 0.2s;
   transition-timing-function: ease;
   transition-property: color, background-color, opacity;
+
   @apply p-3 text-accent-9 flex items-center
-  justify-center font-semibold cursor-pointer
+    justify-center font-semibold cursor-pointer
   bg-accent-0 text-sm;
 }
 
