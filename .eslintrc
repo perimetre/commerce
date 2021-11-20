@@ -1,6 +1,48 @@
 {
-  "extends": ["next", "prettier"],
+  "extends": [
+    // Uses the recommended rules from the @typescript-eslint/eslint-plugin
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    // Next already has some react and typescript options
+    "next",
+    "plugin:jsx-a11y/recommended",
+    "plugin:tailwind/recommended",
+    "prettier",
+    // Enables eslint-plugin-prettier and displays prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
+    "plugin:prettier/recommended"
+  ],
+  "plugins": ["tsc"],
   "rules": {
-    "react/no-unescaped-entities": "off"
-  }
+    "react/no-unescaped-entities": "off",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "error",
+    "@typescript-eslint/no-unused-vars": "error",
+    "tailwind/class-order": "error",
+    "jsx-a11y/no-onchange": "off",
+    // Since we use next js, a tags may not have href, which is passed down by next link
+    "jsx-a11y/anchor-is-valid": "off",
+    "prettier/prettier": [
+      "error",
+      {
+        // Fixes mismatching windows/unix file end of lines
+        "endOfLine": "auto"
+      }
+    ],
+    "tsc/config": [
+      1,
+      {
+        "configFile": "tsconfig.json"
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["*.js"],
+      "rules": {
+        // Disable "no requires" for js files
+        "@typescript-eslint/no-var-requires": "off"
+      }
+    }
+  ]
 }
