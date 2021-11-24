@@ -1,69 +1,61 @@
-import cn from 'classnames'
-import Link from 'next/link'
-import { FC, useRef, useState, useEffect } from 'react'
-import { useTheme } from 'next-themes'
-import { useRouter } from 'next/router'
-import s from './DropdownMenu.module.css'
-import { Avatar } from '@components/common'
-import { Moon, Sun } from '@components/icons'
-import { useUI } from '@components/ui/context'
-import ClickOutside from '@lib/click-outside'
-import useLogout from '@framework/auth/use-logout'
+import cn from 'classnames';
+import Link from 'next/link';
+import { FC, useRef, useState, useEffect } from 'react';
+import { useTheme } from 'next-themes';
+import { useRouter } from 'next/router';
+import s from './DropdownMenu.module.css';
+import { Avatar } from '@components/common';
+import { Moon, Sun } from '@components/icons';
+// import { useUI } from '@components/ui/context';
+import ClickOutside from '@lib/click-outside';
+import useLogout from '@framework/auth/use-logout';
 
-import {
-  disableBodyScroll,
-  enableBodyScroll,
-  clearAllBodyScrollLocks,
-} from 'body-scroll-lock'
+import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 
 interface DropdownMenuProps {
-  open?: boolean
+  open?: boolean;
 }
 
 const LINKS = [
   {
     name: 'My Orders',
-    href: '/orders',
+    href: '/orders'
   },
   {
     name: 'My Profile',
-    href: '/profile',
+    href: '/profile'
   },
   {
     name: 'My Cart',
-    href: '/cart',
-  },
-]
+    href: '/cart'
+  }
+];
 
-const DropdownMenu: FC<DropdownMenuProps> = ({ open = false }) => {
-  const logout = useLogout()
-  const { pathname } = useRouter()
-  const { theme, setTheme } = useTheme()
-  const [display, setDisplay] = useState(false)
-  const { closeSidebarIfPresent } = useUI()
-  const ref = useRef() as React.MutableRefObject<HTMLUListElement>
+const DropdownMenu: FC<DropdownMenuProps> = () => {
+  const logout = useLogout();
+  const { pathname } = useRouter();
+  const { theme, setTheme } = useTheme();
+  const [display, setDisplay] = useState(false);
+  // const { closeSidebarIfPresent } = useUI();
+  const ref = useRef() as React.MutableRefObject<HTMLUListElement>;
 
   useEffect(() => {
     if (ref.current) {
       if (display) {
-        disableBodyScroll(ref.current)
+        disableBodyScroll(ref.current);
       } else {
-        enableBodyScroll(ref.current)
+        enableBodyScroll(ref.current);
       }
     }
     return () => {
-      clearAllBodyScrollLocks()
-    }
-  }, [display])
+      clearAllBodyScrollLocks();
+    };
+  }, [display]);
 
   return (
     <ClickOutside active={display} onClick={() => setDisplay(false)}>
       <div>
-        <button
-          className={s.avatarButton}
-          onClick={() => setDisplay(!display)}
-          aria-label="Menu"
-        >
+        <button className={s.avatarButton} onClick={() => setDisplay(!display)} aria-label="Menu">
           <Avatar />
         </button>
         {display && (
@@ -74,12 +66,18 @@ const DropdownMenu: FC<DropdownMenuProps> = ({ open = false }) => {
                   <Link href={href}>
                     <a
                       className={cn(s.link, {
-                        [s.active]: pathname === href,
+                        [s.active]: pathname === href
                       })}
                       onClick={() => {
-                        setDisplay(false)
-                        closeSidebarIfPresent()
+                        setDisplay(false);
+                        // closeSidebarIfPresent();
                       }}
+                      onKeyDown={(e) => {
+                        e.key == 'Enter' && setDisplay(false);
+                        // closeSidebarIfPresent();
+                      }}
+                      role="button"
+                      tabIndex={0}
                     >
                       {name}
                     </a>
@@ -91,19 +89,21 @@ const DropdownMenu: FC<DropdownMenuProps> = ({ open = false }) => {
               <a
                 className={cn(s.link, 'justify-between')}
                 onClick={() => {
-                  theme === 'dark' ? setTheme('light') : setTheme('dark')
-                  setDisplay(false)
+                  theme === 'dark' ? setTheme('light') : setTheme('dark');
+                  setDisplay(false);
                 }}
+                onKeyDown={(e) => {
+                  e.key == 'Enter' && theme === 'dark' ? setTheme('light') : setTheme('dark');
+                  setDisplay(false);
+                }}
+                role="button"
+                tabIndex={0}
               >
                 <div>
                   Theme: <strong>{theme}</strong>{' '}
                 </div>
                 <div className="ml-3">
-                  {theme == 'dark' ? (
-                    <Moon width={20} height={20} />
-                  ) : (
-                    <Sun width="20" height={20} />
-                  )}
+                  {theme == 'dark' ? <Moon width={20} height={20} /> : <Sun width="20" height={20} />}
                 </div>
               </a>
             </li>
@@ -111,6 +111,9 @@ const DropdownMenu: FC<DropdownMenuProps> = ({ open = false }) => {
               <a
                 className={cn(s.link, 'border-t border-accent-2 mt-4')}
                 onClick={() => logout()}
+                onKeyDown={(e) => e.key == 'Enter' && logout()}
+                role="button"
+                tabIndex={0}
               >
                 Logout
               </a>
@@ -119,7 +122,7 @@ const DropdownMenu: FC<DropdownMenuProps> = ({ open = false }) => {
         )}
       </div>
     </ClickOutside>
-  )
-}
+  );
+};
 
-export default DropdownMenu
+export default DropdownMenu;

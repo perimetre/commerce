@@ -1,24 +1,20 @@
-import cn from 'classnames'
-import React, {
-  forwardRef,
-  ButtonHTMLAttributes,
-  JSXElementConstructor,
-  useRef,
-} from 'react'
-import mergeRefs from 'react-merge-refs'
-import s from './Button.module.css'
-import { LoadingDots } from '@components/ui'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import cn from 'classnames';
+import React, { forwardRef, ButtonHTMLAttributes, JSXElementConstructor, useRef } from 'react';
+import mergeRefs from 'react-merge-refs';
+import s from './Button.module.css';
+import { LoadingDots } from '@components/ui';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  href?: string
-  className?: string
-  variant?: 'flat' | 'slim' | 'ghost' | 'naked'
-  active?: boolean
-  type?: 'submit' | 'reset' | 'button'
-  Component?: string | JSXElementConstructor<any>
-  width?: string | number
-  loading?: boolean
-  disabled?: boolean
+  href?: string;
+  className?: string;
+  variant?: 'flat' | 'slim' | 'ghost' | 'naked';
+  active?: boolean;
+  type?: 'submit' | 'reset' | 'button';
+  Component?: string | JSXElementConstructor<any>;
+  width?: string | number;
+  loading?: boolean;
+  disabled?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = forwardRef((props, buttonRef) => {
@@ -33,8 +29,8 @@ const Button: React.FC<ButtonProps> = forwardRef((props, buttonRef) => {
     style = {},
     Component = 'button',
     ...rest
-  } = props
-  const ref = useRef<typeof Component>(null)
+  } = props;
+  const ref = useRef<typeof Component>(null);
 
   const rootClassName = cn(
     s.root,
@@ -43,10 +39,10 @@ const Button: React.FC<ButtonProps> = forwardRef((props, buttonRef) => {
       [s.slim]: variant === 'slim',
       [s.naked]: variant === 'naked',
       [s.loading]: loading,
-      [s.disabled]: disabled,
+      [s.disabled]: disabled
     },
     className
-  )
+  );
 
   return (
     <Component
@@ -57,18 +53,18 @@ const Button: React.FC<ButtonProps> = forwardRef((props, buttonRef) => {
       disabled={disabled}
       style={{
         width,
-        ...style,
+        ...style
       }}
       {...rest}
     >
       {children}
       {loading && (
-        <i className="pl-2 m-0 flex">
+        <i className="flex pl-2 m-0">
           <LoadingDots />
         </i>
       )}
     </Component>
-  )
-})
+  );
+});
 
-export default Button
+export default Button;

@@ -1,23 +1,24 @@
-import cn from 'classnames'
-import s from './Input.module.css'
-import React, { InputHTMLAttributes } from 'react'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import cn from 'classnames';
+import s from './Input.module.css';
+import React, { InputHTMLAttributes } from 'react';
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  className?: string
-  onChange?: (...args: any[]) => any
+  className?: string;
+  onChange?: (...args: any) => void;
 }
 
 const Input: React.FC<InputProps> = (props) => {
-  const { className, children, onChange, ...rest } = props
+  const { className, onChange, ...rest } = props;
 
-  const rootClassName = cn(s.root, {}, className)
+  const rootClassName = cn(s.root, {}, className);
 
-  const handleOnChange = (e: any) => {
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (onChange) {
-      onChange(e.target.value)
+      onChange(e.target.value);
     }
-    return null
-  }
+    return null;
+  };
 
   return (
     <label>
@@ -31,7 +32,7 @@ const Input: React.FC<InputProps> = (props) => {
         {...rest}
       />
     </label>
-  )
-}
+  );
+};
 
-export default Input
+export default Input;

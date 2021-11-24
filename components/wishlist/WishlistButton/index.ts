@@ -1,1 +1,2 @@
-export { default } from './WishlistButton'
+/* eslint-disable tsc/config */
+// export { default } from './WishlistButton';

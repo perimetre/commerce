@@ -1,20 +1,15 @@
-import cn from 'classnames'
-import { FC, ReactNode, Component } from 'react'
-import s from './Grid.module.css'
+import cn from 'classnames';
+import { FC, ReactNode, Component } from 'react';
+import s from './Grid.module.css';
 
 interface GridProps {
-  className?: string
-  children?: ReactNode[] | Component[] | any[]
-  layout?: 'A' | 'B' | 'C' | 'D' | 'normal'
-  variant?: 'default' | 'filled'
+  className?: string;
+  children?: ReactNode[] | Component[];
+  layout?: 'A' | 'B' | 'C' | 'D' | 'normal';
+  variant?: 'default' | 'filled';
 }
 
-const Grid: FC<GridProps> = ({
-  className,
-  layout = 'A',
-  children,
-  variant = 'default',
-}) => {
+const Grid: FC<GridProps> = ({ className, layout = 'A', children, variant = 'default' }) => {
   const rootClassName = cn(
     s.root,
     {
@@ -24,11 +19,11 @@ const Grid: FC<GridProps> = ({
       [s.layoutD]: layout === 'D',
       [s.layoutNormal]: layout === 'normal',
       [s.default]: variant === 'default',
-      [s.filled]: variant === 'filled',
+      [s.filled]: variant === 'filled'
     },
     className
-  )
-  return <div className={rootClassName}>{children}</div>
-}
+  );
+  return <div className={rootClassName}>{children}</div>;
+};
 
-export default Grid
+export default Grid;

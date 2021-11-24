@@ -1,77 +1,75 @@
-import { FC, useEffect, useState, useCallback } from 'react'
-import { validate } from 'email-validator'
-import { Info } from '@components/icons'
-import { useUI } from '@components/ui/context'
-import { Logo, Button, Input } from '@components/ui'
-import useSignup from '@framework/auth/use-signup'
+import { FC, useEffect, useState, useCallback } from 'react';
+import { validate } from 'email-validator';
+import { Info } from '@components/icons';
+import { State, useUI } from '@components/ui/context';
+import { Logo, Button, Input } from '@components/ui';
+import useSignup from '@framework/auth/use-signup';
 
-interface Props {}
+interface ExtendedUI extends State {
+  setModalView: (arg: string) => void;
+  closeModal: () => void;
+}
 
-const SignUpView: FC<Props> = () => {
+const SignUpView: FC = () => {
   // Form State
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState('')
-  const [dirty, setDirty] = useState(false)
-  const [disabled, setDisabled] = useState(false)
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [dirty, setDirty] = useState(false);
+  const [disabled, setDisabled] = useState(false);
 
-  const signup = useSignup()
-  const { setModalView, closeModal } = useUI()
+  const signup = useSignup();
+  const { setModalView, closeModal } = useUI() as ExtendedUI;
 
   const handleSignup = async (e: React.SyntheticEvent<EventTarget>) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!dirty && !disabled) {
-      setDirty(true)
-      handleValidation()
+      setDirty(true);
+      handleValidation();
     }
 
     try {
-      setLoading(true)
-      setMessage('')
+      setLoading(true);
+      setMessage('');
       await signup({
         email,
         firstName,
         lastName,
-        password,
-      })
-      setLoading(false)
-      closeModal()
+        password
+      });
+      setLoading(false);
+      closeModal();
     } catch ({ errors }) {
-      setMessage(errors[0].message)
-      setLoading(false)
+      setMessage(errors[0].message);
+      setLoading(false);
     }
-  }
+  };
 
   const handleValidation = useCallback(() => {
     // Test for Alphanumeric password
-    const validPassword = /^(?=.*[a-zA-Z])(?=.*[0-9])/.test(password)
+    const validPassword = /^(?=.*[a-zA-Z])(?=.*[0-9])/.test(password);
 
     // Unable to send form unless fields are valid.
     if (dirty) {
-      setDisabled(!validate(email) || password.length < 7 || !validPassword)
+      setDisabled(!validate(email) || password.length < 7 || !validPassword);
     }
-  }, [email, password, dirty])
+  }, [email, password, dirty]);
 
   useEffect(() => {
-    handleValidation()
-  }, [handleValidation])
+    handleValidation();
+  }, [handleValidation]);
 
   return (
-    <form
-      onSubmit={handleSignup}
-      className="w-80 flex flex-col justify-between p-3"
-    >
+    <form onSubmit={handleSignup} className="flex flex-col justify-between p-3 w-80">
       <div className="flex justify-center pb-12 ">
         <Logo width="64px" height="64px" />
       </div>
       <div className="flex flex-col space-y-4">
-        {message && (
-          <div className="text-red border border-red p-3">{message}</div>
-        )}
+        {message && <div className="p-3 border text-red border-red">{message}</div>}
         <Input placeholder="First Name" onChange={setFirstName} />
         <Input placeholder="Last Name" onChange={setLastName} />
         <Input type="email" placeholder="Email" onChange={setEmail} />
@@ -80,35 +78,32 @@ const SignUpView: FC<Props> = () => {
           <span className="inline-block align-middle ">
             <Info width="15" height="15" />
           </span>{' '}
-          <span className="leading-6 text-sm">
-            <strong>Info</strong>: Passwords must be longer than 7 chars and
-            include numbers.{' '}
+          <span className="text-sm leading-6">
+            <strong>Info</strong>: Passwords must be longer than 7 chars and include numbers.{' '}
           </span>
         </span>
-        <div className="pt-2 w-full flex flex-col">
-          <Button
-            variant="slim"
-            type="submit"
-            loading={loading}
-            disabled={disabled}
-          >
+        <div className="flex flex-col w-full pt-2">
+          <Button variant="slim" type="submit" loading={loading} disabled={disabled}>
             Sign Up
           </Button>
         </div>
 
-        <span className="pt-1 text-center text-sm">
+        <span className="pt-1 text-sm text-center">
           <span className="text-accent-7">Do you have an account?</span>
           {` `}
           <a
-            className="text-accent-9 font-bold hover:underline cursor-pointer"
+            className="font-bold cursor-pointer text-accent-9 hover:underline"
             onClick={() => setModalView('LOGIN_VIEW')}
+            onKeyDown={(e) => e.key == 'Enter' && setModalView('LOGIN_VIEW')}
+            role="button"
+            tabIndex={0}
           >
             Log In
           </a>
         </span>
       </div>
     </form>
-  )
-}
+  );
+};
 
-export default SignUpView
+export default SignUpView;

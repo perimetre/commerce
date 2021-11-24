@@ -1,16 +1,17 @@
-import cn from 'classnames'
-import Link from 'next/link'
-import { FC, useState } from 'react'
-import { useRouter } from 'next/router'
-import s from './I18nWidget.module.css'
-import { Cross, ChevronUp } from '@components/icons'
-import ClickOutside from '@lib/click-outside'
+import cn from 'classnames';
+import Link from 'next/link';
+import Image from 'next/image';
+import { FC, useState } from 'react';
+import { useRouter } from 'next/router';
+import s from './I18nWidget.module.css';
+import { Cross, ChevronUp } from '@components/icons';
+import ClickOutside from '@lib/click-outside';
 interface LOCALE_DATA {
-  name: string
+  name: string;
   img: {
-    filename: string
-    alt: string
-  }
+    filename: string;
+    alt: string;
+  };
 }
 
 const LOCALES_MAP: Record<string, LOCALE_DATA> = {
@@ -18,42 +19,40 @@ const LOCALES_MAP: Record<string, LOCALE_DATA> = {
     name: 'Español',
     img: {
       filename: 'flag-es-co.svg',
-      alt: 'Bandera Colombiana',
-    },
+      alt: 'Bandera Colombiana'
+    }
   },
   'en-US': {
     name: 'English',
     img: {
       filename: 'flag-en-us.svg',
-      alt: 'US Flag',
-    },
-  },
-}
+      alt: 'US Flag'
+    }
+  }
+};
 
 const I18nWidget: FC = () => {
-  const [display, setDisplay] = useState(false)
-  const {
-    locale,
-    locales,
-    defaultLocale = 'en-US',
-    asPath: currentPath,
-  } = useRouter()
+  const [display, setDisplay] = useState(false);
+  const { locale, locales, defaultLocale = 'en-US', asPath: currentPath } = useRouter();
 
-  const options = locales?.filter((val) => val !== locale)
-  const currentLocale = locale || defaultLocale
+  const options = locales?.filter((val) => val !== locale);
+  const currentLocale = locale || defaultLocale;
 
   return (
     <ClickOutside active={display} onClick={() => setDisplay(false)}>
       <nav className={s.root}>
         <div
-          className="flex items-center relative"
+          className="relative flex items-center"
           onClick={() => setDisplay(!display)}
+          onKeyDown={(e) => e.key == 'Enter' && onclick}
+          role="button"
+          tabIndex={0}
         >
           <button className={s.button} aria-label="Language selector">
-            <img
+            <Image
               width="20"
               height="20"
-              className="block mr-2 w-5"
+              className="block w-5 mr-2"
               src={`/${LOCALES_MAP[currentLocale].img.filename}`}
               alt={LOCALES_MAP[currentLocale].img.alt}
             />
@@ -68,12 +67,8 @@ const I18nWidget: FC = () => {
           {options?.length && display ? (
             <div className={s.dropdownMenu}>
               <div className="flex flex-row justify-end px-6">
-                <button
-                  onClick={() => setDisplay(false)}
-                  aria-label="Close panel"
-                  className={s.closeButton}
-                >
-                  <Cross className="h-6 w-6" />
+                <button onClick={() => setDisplay(false)} aria-label="Close panel" className={s.closeButton}>
+                  <Cross className="w-6 h-6" />
                 </button>
               </div>
               <ul>
@@ -83,6 +78,9 @@ const I18nWidget: FC = () => {
                       <a
                         className={cn(s.item)}
                         onClick={() => setDisplay(false)}
+                        onKeyDown={(e) => e.key == 'Enter' && setDisplay(false)}
+                        role="button"
+                        tabIndex={0}
                       >
                         {LOCALES_MAP[locale].name}
                       </a>
@@ -95,7 +93,7 @@ const I18nWidget: FC = () => {
         </div>
       </nav>
     </ClickOutside>
-  )
-}
+  );
+};
 
-export default I18nWidget
+export default I18nWidget;

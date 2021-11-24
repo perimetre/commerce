@@ -1,21 +1,18 @@
-import { ChangeEvent, FocusEventHandler, useEffect, useState } from 'react'
-import cn from 'classnames'
-import Image from 'next/image'
-import Link from 'next/link'
-import s from './CartItem.module.css'
-import { Trash, Plus, Minus, Cross } from '@components/icons'
-import { useUI } from '@components/ui/context'
-import type { LineItem } from '@commerce/types/cart'
-import usePrice from '@framework/product/use-price'
-import useUpdateItem from '@framework/cart/use-update-item'
-import useRemoveItem from '@framework/cart/use-remove-item'
-import Quantity from '@components/ui/Quantity'
+import { ChangeEvent, useEffect, useState } from 'react';
+import cn from 'classnames';
+import Image from 'next/image';
+import Link from 'next/link';
+import s from './CartItem.module.css';
+// import { Trash, Plus, Minus, Cross } from '@components/icons';
+import { State, useUI } from '@components/ui/context';
+import type { LineItem, SelectedOption } from '@commerce/types/cart';
+import usePrice from '@framework/product/use-price';
+import useUpdateItem from '@framework/cart/use-update-item';
+import useRemoveItem from '@framework/cart/use-remove-item';
+import Quantity from '@components/ui/Quantity';
 
-type ItemOption = {
-  name: string
-  nameId: number
-  value: string
-  valueId: number
+interface ExtendedUI extends State {
+  closeSidebarIfPresent: () => void;
 }
 
 const CartItem = ({
@@ -24,66 +21,64 @@ const CartItem = ({
   currencyCode,
   ...rest
 }: {
-  variant?: 'default' | 'display'
-  item: LineItem
-  currencyCode: string
+  variant?: 'default' | 'display';
+  item: LineItem;
+  currencyCode: string;
 }) => {
-  const { closeSidebarIfPresent } = useUI()
-  const [removing, setRemoving] = useState(false)
-  const [quantity, setQuantity] = useState<number>(item.quantity)
-  const removeItem = useRemoveItem()
-  const updateItem = useUpdateItem({ item })
+  const { closeSidebarIfPresent } = useUI() as ExtendedUI;
+  const [removing, setRemoving] = useState(false);
+  const [quantity, setQuantity] = useState<number>(item.quantity);
+  const removeItem = useRemoveItem();
+  const updateItem = useUpdateItem({ item });
 
   const { price } = usePrice({
     amount: item.variant.price * item.quantity,
     baseAmount: item.variant.listPrice * item.quantity,
-    currencyCode,
-  })
+    currencyCode
+  });
 
-  const handleChange = async ({
-    target: { value },
-  }: ChangeEvent<HTMLInputElement>) => {
-    setQuantity(Number(value))
-    await updateItem({ quantity: Number(value) })
-  }
+  const handleChange = async ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
+    setQuantity(Number(value));
+    await updateItem({ quantity: Number(value) });
+  };
 
   const increaseQuantity = async (n = 1) => {
-    const val = Number(quantity) + n
-    setQuantity(val)
-    await updateItem({ quantity: val })
-  }
+    const val = Number(quantity) + n;
+    setQuantity(val);
+    await updateItem({ quantity: val });
+  };
 
   const handleRemove = async () => {
-    setRemoving(true)
+    setRemoving(true);
     try {
-      await removeItem(item)
+      await removeItem(item);
     } catch (error) {
-      setRemoving(false)
+      setRemoving(false);
     }
-  }
+  };
 
   // TODO: Add a type for this
-  const options = (item as any).options
+  const options = (item as LineItem).options;
 
   useEffect(() => {
     // Reset the quantity state if the item quantity changes
     if (item.quantity !== Number(quantity)) {
-      setQuantity(item.quantity)
+      setQuantity(item.quantity);
     }
     // TODO: currently not including quantity in deps is intended, but we should
     // do this differently as it could break easily
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [item.quantity])
+  }, [item.quantity]);
 
   return (
     <li
       className={cn(s.root, {
-        'opacity-50 pointer-events-none': removing,
+        'opacity-50 pointer-events-none': removing
       })}
       {...rest}
     >
-      <div className="flex flex-row space-x-4 py-4">
-        <div className="w-16 h-16 bg-violet relative overflow-hidden cursor-pointer z-0">
+      <div className="flex flex-row py-4 space-x-4">
+        <div className="relative z-0 w-16 h-16 overflow-hidden cursor-pointer bg-violet">
           <Link href={`/product/${item.path}`}>
             <a>
               <Image
@@ -91,19 +86,22 @@ const CartItem = ({
                 className={s.productImage}
                 width={150}
                 height={150}
-                src={item.variant.image!.url}
-                alt={item.variant.image!.altText}
+                src={item.variant?.image?.url || ''}
+                alt={item.variant?.image?.url || ''}
                 unoptimized
               />
             </a>
           </Link>
         </div>
-        <div className="flex-1 flex flex-col text-base">
+        <div className="flex flex-col flex-1 text-base">
           <Link href={`/product/${item.path}`}>
             <a>
               <span
                 className={s.productName}
                 onClick={() => closeSidebarIfPresent()}
+                onKeyDown={(e) => e.key == 'Enter' && closeSidebarIfPresent()}
+                role="button"
+                tabIndex={0}
               >
                 {item.name}
               </span>
@@ -111,21 +109,21 @@ const CartItem = ({
           </Link>
           {options && options.length > 0 && (
             <div className="flex items-center pb-1">
-              {options.map((option: ItemOption, i: number) => (
+              {options.map((option: SelectedOption, i: number) => (
                 <div
                   key={`${item.id}-${option.name}`}
-                  className="text-sm font-semibold text-accent-7 inline-flex items-center justify-center"
+                  className="inline-flex items-center justify-center text-sm font-semibold text-accent-7"
                 >
                   {option.name}
                   {option.name === 'Color' ? (
                     <span
-                      className="mx-2 rounded-full bg-transparent border w-5 h-5 p-1 text-accent-9 inline-flex items-center justify-center overflow-hidden"
+                      className="inline-flex items-center justify-center w-5 h-5 p-1 mx-2 overflow-hidden bg-transparent border rounded-full text-accent-9"
                       style={{
-                        backgroundColor: `${option.value}`,
+                        backgroundColor: `${option.value}`
                       }}
                     ></span>
                   ) : (
-                    <span className="mx-2 rounded-full bg-transparent border h-5 p-1 text-accent-9 inline-flex items-center justify-center overflow-hidden">
+                    <span className="inline-flex items-center justify-center h-5 p-1 mx-2 overflow-hidden bg-transparent border rounded-full text-accent-9">
                       {option.value}
                     </span>
                   )}
@@ -134,11 +132,9 @@ const CartItem = ({
               ))}
             </div>
           )}
-          {variant === 'display' && (
-            <div className="text-sm tracking-wider">{quantity}x</div>
-          )}
+          {variant === 'display' && <div className="text-sm tracking-wider">{quantity}x</div>}
         </div>
-        <div className="flex flex-col justify-between space-y-2 text-sm">
+        <div className="flex flex-col justify-between text-sm space-y-2">
           <span>{price}</span>
         </div>
       </div>
@@ -152,7 +148,7 @@ const CartItem = ({
         />
       )}
     </li>
-  )
-}
+  );
+};
 
-export default CartItem
+export default CartItem;
