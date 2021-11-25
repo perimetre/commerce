@@ -1,22 +1,19 @@
-import { FC } from 'react'
-import Link from 'next/link'
-import type { Product } from '@commerce/types/product'
-import { Grid } from '@components/ui'
-import { ProductCard } from '@components/product'
-import s from './HomeAllProductsGrid.module.css'
-import { getCategoryPath, getDesignerPath } from '@lib/search'
+import { FC } from 'react';
+import Link from 'next/link';
+import type { Product } from '@commerce/types/product';
+import { Grid } from '@components/ui';
+import { ProductCard } from '@components/product';
+import s from './HomeAllProductsGrid.module.css';
+import { getCategoryPath, getDesignerPath } from '@lib/search';
+import { Brand, Category } from '@commerce/types/site';
 
 interface Props {
-  categories?: any
-  brands?: any
-  products?: Product[]
+  categories?: Category[];
+  brands?: Brand;
+  products?: Product[];
 }
 
-const HomeAllProductsGrid: FC<Props> = ({
-  categories,
-  brands,
-  products = [],
-}) => {
+const HomeAllProductsGrid: FC<Props> = ({ categories, brands, products = [] }) => {
   return (
     <div className={s.root}>
       <div className={s.asideWrapper}>
@@ -27,8 +24,8 @@ const HomeAllProductsGrid: FC<Props> = ({
                 <a>All Categories</a>
               </Link>
             </li>
-            {categories.map((cat: any) => (
-              <li key={cat.path} className="py-1 text-accent-8 text-base">
+            {categories?.map((cat: Category) => (
+              <li key={cat.path} className="py-1 text-base text-accent-8">
                 <Link href={getCategoryPath(cat.path)}>
                   <a>{cat.name}</a>
                 </Link>
@@ -41,8 +38,8 @@ const HomeAllProductsGrid: FC<Props> = ({
                 <a>All Designers</a>
               </Link>
             </li>
-            {brands.flatMap(({ node }: any) => (
-              <li key={node.path} className="py-1 text-accent-8 text-base">
+            {brands.flatMap(({ node }: Brand) => (
+              <li key={node.path} className="py-1 text-base text-accent-8">
                 <Link href={getDesignerPath(node.path)}>
                   <a>{node.name}</a>
                 </Link>
@@ -60,14 +57,14 @@ const HomeAllProductsGrid: FC<Props> = ({
               variant="simple"
               imgProps={{
                 width: 480,
-                height: 480,
+                height: 480
               }}
             />
           ))}
         </Grid>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default HomeAllProductsGrid
+export default HomeAllProductsGrid;

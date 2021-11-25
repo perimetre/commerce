@@ -1,20 +1,15 @@
-import cn from 'classnames'
-import { inherits } from 'util'
-import s from './ProductTag.module.css'
+import cn from 'classnames';
+// import { inherits } from 'util';
+import s from './ProductTag.module.css';
 
 interface ProductTagProps {
-  className?: string
-  name: string
-  price: string
-  fontSize?: number
+  className?: string;
+  name: string;
+  price: string;
+  fontSize?: number;
 }
 
-const ProductTag: React.FC<ProductTagProps> = ({
-  name,
-  price,
-  className = '',
-  fontSize = 32,
-}) => {
+const ProductTag: React.FC<ProductTagProps> = ({ name, price, className = '', fontSize = 32 }) => {
   return (
     <div className={cn(s.root, className)}>
       <h3 className={s.name}>
@@ -22,7 +17,7 @@ const ProductTag: React.FC<ProductTagProps> = ({
           className={cn({ [s.fontsizing]: fontSize < 32 })}
           style={{
             fontSize: `${fontSize}px`,
-            lineHeight: `${fontSize}px`,
+            lineHeight: `${fontSize}px`
           }}
         >
           {name}
@@ -30,7 +25,7 @@ const ProductTag: React.FC<ProductTagProps> = ({
       </h3>
       <div className={s.price}>{price}</div>
     </div>
-  )
-}
+  );
+};
 
-export default ProductTag
+export default ProductTag;

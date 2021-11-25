@@ -1,11 +1,11 @@
-import { FC } from 'react'
-import s from './ShippingWidget.module.css'
-import { ChevronRight, MapPin, Check } from '@components/icons'
-import cn from 'classnames'
+import { FC } from 'react';
+import s from './ShippingWidget.module.css';
+import { ChevronRight, MapPin, Check } from '@components/icons';
+// import cn from 'classnames';
 
 interface ComponentProps {
-  onClick?: () => any
-  isValid?: boolean
+  onClick?: () => void;
+  isValid?: boolean;
 }
 
 const ShippingWidget: FC<ComponentProps> = ({ onClick, isValid }) => {
@@ -13,12 +13,10 @@ const ShippingWidget: FC<ComponentProps> = ({ onClick, isValid }) => {
   Only available with checkout set to true -
   This means that the provider does offer checkout functionality. */
   return (
-    <div onClick={onClick} className={s.root}>
-      <div className="flex flex-1 items-center">
-        <MapPin className="w-5 flex" />
-        <span className="ml-5 text-sm text-center font-medium">
-          Add Shipping Address
-        </span>
+    <div onClick={onClick} onKeyDown={(e) => e.key == 'enter' && onClick} className={s.root} tabIndex={0} role="button">
+      <div className="flex items-center flex-1">
+        <MapPin className="flex w-5" />
+        <span className="ml-5 text-sm font-medium text-center">Add Shipping Address</span>
         {/* <span>
           1046 Kearny Street.<br/>
           San Franssisco, California
@@ -26,7 +24,7 @@ const ShippingWidget: FC<ComponentProps> = ({ onClick, isValid }) => {
       </div>
       <div>{isValid ? <Check /> : <ChevronRight />}</div>
     </div>
-  )
-}
+  );
+};
 
-export default ShippingWidget
+export default ShippingWidget;

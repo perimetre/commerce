@@ -1,7 +1,7 @@
-import { FC } from 'react'
-import NextHead from 'next/head'
-import { DefaultSeo } from 'next-seo'
-import config from '@config/seo.json'
+import { FC } from 'react';
+import NextHead from 'next/head';
+import { DefaultSeo } from 'next-seo';
+import config from '@config/seo.json';
 
 const Head: FC = () => {
   return (
@@ -12,7 +12,7 @@ const Head: FC = () => {
         <link rel="manifest" href="/site.webmanifest" key="site-manifest" />
       </NextHead>
     </>
-  )
-}
+  );
+};
 
-export default Head
+export default Head;

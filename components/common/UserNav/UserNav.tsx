@@ -1,27 +1,33 @@
-import { FC } from 'react'
-import Link from 'next/link'
-import cn from 'classnames'
-import type { LineItem } from '@commerce/types/cart'
-import useCart from '@framework/cart/use-cart'
-import useCustomer from '@framework/customer/use-customer'
-import { Avatar } from '@components/common'
-import { Heart, Bag } from '@components/icons'
-import { useUI } from '@components/ui/context'
-import Button from '@components/ui/Button'
-import DropdownMenu from './DropdownMenu'
-import s from './UserNav.module.css'
+import { FC } from 'react';
+import Link from 'next/link';
+import cn from 'classnames';
+import type { LineItem } from '@commerce/types/cart';
+import useCart from '@framework/cart/use-cart';
+import useCustomer from '@framework/customer/use-customer';
+import { Avatar } from '@components/common';
+import { Heart, Bag } from '@components/icons';
+import { State, useUI } from '@components/ui/context';
+import Button from '@components/ui/Button';
+import DropdownMenu from './DropdownMenu';
+import s from './UserNav.module.css';
 
 interface Props {
-  className?: string
+  className?: string;
 }
 
-const countItem = (count: number, item: LineItem) => count + item.quantity
+interface ExtendedUI extends State {
+  toggleSidebar: () => void;
+  openModal: () => void;
+  closeSidebarIfPresent: () => void | false;
+}
+
+const countItem = (count: number, item: LineItem) => count + item.quantity;
 
 const UserNav: FC<Props> = ({ className }) => {
-  const { data } = useCart()
-  const { data: customer } = useCustomer()
-  const { toggleSidebar, closeSidebarIfPresent, openModal } = useUI()
-  const itemsCount = data?.lineItems.reduce(countItem, 0) ?? 0
+  const { data } = useCart();
+  const { data: customer } = useCustomer();
+  const { toggleSidebar, closeSidebarIfPresent, openModal } = useUI() as ExtendedUI;
+  const itemsCount = data?.lineItems.reduce(countItem, 0) ?? 0;
 
   return (
     <nav className={cn(s.root, className)}>
@@ -37,7 +43,13 @@ const UserNav: FC<Props> = ({ className }) => {
         {process.env.COMMERCE_WISHLIST_ENABLED && (
           <li className={s.item}>
             <Link href="/wishlist">
-              <a onClick={closeSidebarIfPresent} aria-label="Wishlist">
+              <a
+                onClick={closeSidebarIfPresent}
+                aria-label="Wishlist"
+                onKeyDown={(e) => e.key == 'Enter' && closeSidebarIfPresent()}
+                role="button"
+                tabIndex={0}
+              >
                 <Heart />
               </a>
             </Link>
@@ -48,11 +60,7 @@ const UserNav: FC<Props> = ({ className }) => {
             {customer ? (
               <DropdownMenu />
             ) : (
-              <button
-                className={s.avatarButton}
-                aria-label="Menu"
-                onClick={() => openModal()}
-              >
+              <button className={s.avatarButton} aria-label="Menu" onClick={() => openModal()}>
                 <Avatar />
               </button>
             )}
@@ -60,7 +68,7 @@ const UserNav: FC<Props> = ({ className }) => {
         )}
       </ul>
     </nav>
-  )
-}
+  );
+};
 
-export default UserNav
+export default UserNav;

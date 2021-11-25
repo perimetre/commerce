@@ -1,4 +1,4 @@
-.root {
+/* .root {
   transition-duration: 0.2s;
   transition-timing-function: ease;
   transition-property: color, background-color, opacity;
@@ -31,4 +31,4 @@
   .root {
     @apply p-4;
   }
-}
+} */
